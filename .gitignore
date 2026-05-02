@@ -1,0 +1,9 @@
+dist/
+node_modules/
+.playwright-mcp/
+.claude/
+
+.env
+.env.*
+
+*.log

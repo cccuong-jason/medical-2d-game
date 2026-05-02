@@ -1,0 +1,330 @@
+{
+  "meta": {
+    "id": "be-fast-foundation",
+    "version": "0.2.0",
+    "language": "vi",
+    "sourceOfTruth": "zustand-first",
+    "notes": "All player-facing copy is Vietnamese. Code and comments remain English."
+  },
+  "grid": {
+    "cartTileWidth": 64,
+    "cartTileHeight": 32,
+    "tileRatio": "2:1",
+    "worldOrigin": {
+      "x": 0,
+      "y": 0
+    },
+    "projection": {
+      "isoXFormula": "x - y",
+      "isoYFormula": "(x + y) / 2"
+    },
+    "depthSort": {
+      "mode": "feet-anchor",
+      "formula": "feetY + depthOffset"
+    }
+  },
+  "audio": {
+    "modes": [
+      "menu",
+      "normal",
+      "danger"
+    ]
+  },
+  "assets": {
+    "characters": {
+      "girlA": {
+        "key": "girlA",
+        "class": "worldSprite",
+        "path": "/assets/characters/girl-a/rotations/south.png",
+        "source": {
+          "tool": "pixellab",
+          "mode": "standard",
+          "characterId": "54021e67-96cd-4323-a5b9-e59499fc485a"
+        },
+        "rotations": {
+          "south": "/assets/characters/girl-a/rotations/south.png",
+          "south-east": "/assets/characters/girl-a/rotations/south-east.png",
+          "east": "/assets/characters/girl-a/rotations/east.png",
+          "north-east": "/assets/characters/girl-a/rotations/north-east.png",
+          "north": "/assets/characters/girl-a/rotations/north.png",
+          "north-west": "/assets/characters/girl-a/rotations/north-west.png",
+          "west": "/assets/characters/girl-a/rotations/west.png",
+          "south-west": "/assets/characters/girl-a/rotations/south-west.png"
+        },
+        "pixelSize": {
+          "width": 92,
+          "height": 92
+        },
+        "visualBounds": {
+          "width": 41,
+          "height": 55
+        },
+        "footprintTiles": {
+          "width": 1,
+          "height": 1
+        },
+        "anchor": {
+          "x": 0.5,
+          "y": 0.88
+        },
+        "depthOffset": 0,
+        "collision": {
+          "shape": "capsule",
+          "orientation": "horizontal",
+          "width": 24,
+          "height": 12
+        },
+        "animations": [
+          "idle",
+          "walk",
+          "interact",
+          "distressed"
+        ]
+      },
+      "mother": {
+        "key": "mother",
+        "class": "worldSprite",
+        "path": "/assets/characters/mother/rotations/south.png",
+        "source": {
+          "tool": "pixellab",
+          "mode": "standard",
+          "characterId": "89414c37-ed01-4b28-bf98-8d0c99fb6ea1"
+        },
+        "rotations": {
+          "south": "/assets/characters/mother/rotations/south.png",
+          "south-east": "/assets/characters/mother/rotations/south-east.png",
+          "east": "/assets/characters/mother/rotations/east.png",
+          "north-east": "/assets/characters/mother/rotations/north-east.png",
+          "north": "/assets/characters/mother/rotations/north.png",
+          "north-west": "/assets/characters/mother/rotations/north-west.png",
+          "west": "/assets/characters/mother/rotations/west.png",
+          "south-west": "/assets/characters/mother/rotations/south-west.png"
+        },
+        "pixelSize": {
+          "width": 92,
+          "height": 92
+        },
+        "visualBounds": {
+          "width": 41,
+          "height": 55
+        },
+        "footprintTiles": {
+          "width": 1,
+          "height": 1
+        },
+        "anchor": {
+          "x": 0.5,
+          "y": 0.88
+        },
+        "depthOffset": 0,
+        "collision": {
+          "shape": "capsule",
+          "orientation": "horizontal",
+          "width": 24,
+          "height": 12
+        },
+        "animations": [
+          "normal_idle",
+          "stroke_onset",
+          "collapsed"
+        ]
+      }
+    },
+    "props": {
+      "woodSofa": {
+        "key": "woodSofa",
+        "class": "worldSprite",
+        "path": "/assets/props/living-room/wood-sofa.png",
+        "source": {
+          "tool": "pixellab",
+          "objectId": "5002b279-0739-4824-8d44-6961b112c54a"
+        },
+        "pixelSize": {
+          "width": 192,
+          "height": 192
+        },
+        "footprintTiles": {
+          "width": 2,
+          "height": 2
+        },
+        "anchor": {
+          "x": 0.5,
+          "y": 0.82
+        },
+        "depthOffset": 4,
+        "collision": {
+          "shape": "rectangle",
+          "width": 112,
+          "height": 42
+        }
+      },
+      "refrigerator": {
+        "key": "refrigerator",
+        "class": "worldSprite",
+        "path": "/assets/props/kitchen/refrigerator.png",
+        "source": {
+          "tool": "pixellab",
+          "objectId": "fe221b81-3daa-4c1a-8559-5ba6285f12fe"
+        },
+        "pixelSize": {
+          "width": 128,
+          "height": 128
+        },
+        "footprintTiles": {
+          "width": 1,
+          "height": 1
+        },
+        "anchor": {
+          "x": 0.5,
+          "y": 0.9
+        },
+        "depthOffset": 6,
+        "collision": {
+          "shape": "rectangle",
+          "width": 40,
+          "height": 22
+        }
+      },
+      "bookcase": {
+        "key": "bookcase",
+        "class": "worldSprite",
+        "path": "/assets/props/living-room/bookcase.png",
+        "source": {
+          "tool": "pixellab",
+          "objectId": "116e7b00-55a3-40e0-b601-737267ec8811"
+        },
+        "pixelSize": {
+          "width": 128,
+          "height": 128
+        },
+        "footprintTiles": {
+          "width": 1,
+          "height": 2
+        },
+        "anchor": {
+          "x": 0.5,
+          "y": 0.9
+        },
+        "depthOffset": 4,
+        "collision": {
+          "shape": "rectangle",
+          "width": 40,
+          "height": 20
+        }
+      },
+      "phoneCabinet": {
+        "key": "phoneCabinet",
+        "class": "worldSprite",
+        "path": "/assets/props/living-room/phone-cabinet.png",
+        "source": {
+          "tool": "pixellab",
+          "objectId": "43a8f636-2e75-4a8f-8a02-bfaa21211eec"
+        },
+        "pixelSize": {
+          "width": 128,
+          "height": 128
+        },
+        "footprintTiles": {
+          "width": 1,
+          "height": 1
+        },
+        "anchor": {
+          "x": 0.5,
+          "y": 0.88
+        },
+        "depthOffset": 2,
+        "collision": {
+          "shape": "rectangle",
+          "width": 34,
+          "height": 18
+        }
+      }
+    },
+    "effects": {
+      "dangerVignette": {
+        "key": "dangerVignette",
+        "class": "uiOverlay",
+        "path": "/assets/effects/danger-vignette.png"
+      },
+      "coldTint": {
+        "key": "coldTint",
+        "class": "cameraEffect",
+        "path": "/assets/effects/cold-tint.json"
+      }
+    },
+    "portraits": {
+      "motherFaceDrooping": {
+        "key": "motherFaceDrooping",
+        "class": "uiPortrait",
+        "path": "/assets/portraits/mother-face-drooping.png",
+        "source": {
+          "tool": "pixellab",
+          "objectId": "0dccd7c0-eec8-438b-995f-8dae3f8b0914",
+          "qualityNote": "Emotionally suitable but symptom is subtle; pair with faceDroopSymptomIcon for gameplay clarity."
+        },
+        "pixelSize": {
+          "width": 256,
+          "height": 256
+        },
+        "usage": [
+          "emergency-cut-in",
+          "dialogue-context"
+        ]
+      },
+      "faceDroopSymptomIcon": {
+        "key": "faceDroopSymptomIcon",
+        "class": "uiPortrait",
+        "path": "/assets/portraits/face-droop-symptom-icon.png",
+        "source": {
+          "tool": "pixellab",
+          "objectId": "8525f16e-e61d-4d26-a339-4347a90a8afc",
+          "qualityNote": "Chosen for Face minigame clarity after portrait-only droop attempts were too subtle."
+        },
+        "pixelSize": {
+          "width": 256,
+          "height": 256
+        },
+        "usage": [
+          "face-minigame",
+          "symptom-teaching-card"
+        ]
+      }
+    },
+    "tiles": {
+      "terracottaFloor": {
+        "key": "terracottaFloor",
+        "class": "tile",
+        "path": "/assets/tiles/terracotta-floor.png",
+        "source": {
+          "tool": "pixellab",
+          "tileId": "cf3c389a-9bba-4d11-8639-a9265da3ae6f"
+        },
+        "pixelSize": {
+          "width": 64,
+          "height": 64
+        },
+        "footprintTiles": {
+          "width": 1,
+          "height": 1
+        }
+      },
+      "warmWall": {
+        "key": "warmWall",
+        "class": "wallSlice",
+        "path": "/assets/tiles/warm-wall.png",
+        "source": {
+          "tool": "pixellab",
+          "objectId": "cb77f0bc-84f7-457c-8bc9-1f60f4c3a8eb"
+        },
+        "pixelSize": {
+          "width": 160,
+          "height": 160
+        },
+        "footprintTiles": {
+          "width": 2,
+          "height": 1
+        }
+      }
+    }
+  }
+}

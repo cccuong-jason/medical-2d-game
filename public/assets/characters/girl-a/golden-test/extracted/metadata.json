@@ -1,0 +1,30 @@
+{
+  "character": {
+    "id": "54021e67-96cd-4323-a5b9-e59499fc485a",
+    "name": "Girl A Golden Test",
+    "prompt": "Vietnamese Gen Z young woman player character for a 2.5D isometric stroke awareness game. Warm modern 16-bit pixel art matching a cozy Vietnamese urban home. Black bob-cut hair, friendly alert expression, oversized pastel pink t-shirt with a simple soft blue graphic, denim shorts, white sneakers. Clean black pixel outline, cohesive warm lofi colors, polished commercial game asset, transparent background, readable silhouette from all directions.",
+    "size": {
+      "width": 92,
+      "height": 92
+    },
+    "template_id": "mannequin",
+    "directions": 8,
+    "view": "low top-down",
+    "created_at": "2026-04-27T06:45:45.641629+00:00"
+  },
+  "frames": {
+    "rotations": {
+      "south": "rotations/south.png",
+      "south-east": "rotations/south-east.png",
+      "east": "rotations/east.png",
+      "north-east": "rotations/north-east.png",
+      "north": "rotations/north.png",
+      "north-west": "rotations/north-west.png",
+      "west": "rotations/west.png",
+      "south-west": "rotations/south-west.png"
+    },
+    "animations": {}
+  },
+  "export_version": "2.0",
+  "export_date": "2026-04-27T06:47:34.691962"
+}
