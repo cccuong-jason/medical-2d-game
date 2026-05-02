@@ -186,7 +186,7 @@ describe('room layout contract', () => {
     expect(nearestRoomInteraction(projectIso(motherTile), 'freeRoam')?.id).toBe(
       'checkMother'
     );
-    expect(nearestRoomInteraction(projectIso(motherTile), 'menu')).toBeNull();
+    expect(nearestRoomInteraction(projectIso(motherTile), 'emergency')).toBeNull();
     expect(nearestRoomInteraction(projectIso(phoneTile), 'emergency')?.id).toBe(
       'callEmergency'
     );

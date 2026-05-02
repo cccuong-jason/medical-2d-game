@@ -24,8 +24,6 @@ import {
 type GameState = ReturnType<typeof useGameStore.getState>;
 
 const MOVABLE_PHASES: AppPhase[] = [
-  'introduction',
-  'tutorial',
   'freeRoam',
   'emergency',
   'callEmergency'

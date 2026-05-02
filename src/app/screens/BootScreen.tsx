@@ -41,7 +41,6 @@ export function BootScreen() {
   }, [navigate]);
 
   // For a segmented pixel art look
-  const segmentWidth = 10;
   const segments = Array.from({ length: 20 });
   const activeSegments = Math.floor((progress / 100) * 20);
 

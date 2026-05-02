@@ -166,7 +166,7 @@ export const ROOM_INTERACTIONS: RoomInteraction[] = [
       symbol: '?',
       targetHighlight: 'pixelPointer'
     },
-    availableIn: ['freeRoam', 'introduction', 'tutorial'],
+    availableIn: ['freeRoam'],
     nextPhase: 'emergency',
     radiusPx: 76
   },
