@@ -79,13 +79,13 @@ export const ROOM_LAYOUT = {
   bounds: {
     minTileX: 0,
     minTileY: 0,
-    maxTileX: 11,
-    maxTileY: 7
+    maxTileX: 15,
+    maxTileY: 11
   },
   floor: {
     assetKey: 'terracottaFloor' satisfies TileAssetKey,
-    widthTiles: 12,
-    depthTiles: 8,
+    widthTiles: 16,
+    depthTiles: 12,
     scale: 1.18
   },
   walls: {
@@ -97,16 +97,16 @@ export const ROOM_LAYOUT = {
     {
       id: 'player',
       assetKey: 'girlA',
-      tileX: 5.1,
-      tileY: 5.05,
+      tileX: 8.5,
+      tileY: 9.5,
       direction: 'north-east',
       scale: 1.38
     },
     {
       id: 'mother',
       assetKey: 'mother',
-      tileX: 6.15,
-      tileY: 3.55,
+      tileX: 6.5,
+      tileY: 5.5,
       direction: 'south-west',
       scale: 1.38
     }
@@ -115,8 +115,8 @@ export const ROOM_LAYOUT = {
     {
       id: 'sofa',
       assetKey: 'woodSofa',
-      tileX: 4.55,
-      tileY: 2.05,
+      tileX: 5.0,
+      tileY: 4.0,
       depthOffset: 4,
       blocksMovement: true,
       scale: 0.98
@@ -124,8 +124,8 @@ export const ROOM_LAYOUT = {
     {
       id: 'fridge',
       assetKey: 'refrigerator',
-      tileX: 10.35,
-      tileY: 0.72,
+      tileX: 14.5,
+      tileY: 1.5,
       depthOffset: 6,
       blocksMovement: true,
       scale: 0.96
@@ -133,8 +133,17 @@ export const ROOM_LAYOUT = {
     {
       id: 'bookshelf',
       assetKey: 'bookcase',
-      tileX: 3.05,
-      tileY: 0.92,
+      tileX: 2.0,
+      tileY: 1.5,
+      depthOffset: 4,
+      blocksMovement: true,
+      scale: 0.94
+    },
+    {
+      id: 'bookshelf2',
+      assetKey: 'bookcase',
+      tileX: 2.0,
+      tileY: 5.0,
       depthOffset: 4,
       blocksMovement: true,
       scale: 0.94
@@ -142,11 +151,20 @@ export const ROOM_LAYOUT = {
     {
       id: 'phoneCabinet',
       assetKey: 'phoneCabinet',
-      tileX: 8.45,
-      tileY: 5.45,
+      tileX: 12.0,
+      tileY: 9.0,
       depthOffset: 2,
       blocksMovement: true,
       scale: 0.68
+    },
+    {
+      id: 'sofa2',
+      assetKey: 'woodSofa',
+      tileX: 10.0,
+      tileY: 4.0,
+      depthOffset: 4,
+      blocksMovement: true,
+      scale: 0.98
     }
   ]
 } as const;

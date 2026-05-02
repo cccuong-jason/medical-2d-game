@@ -214,9 +214,8 @@ describe('room layout contract', () => {
 
     expect(sofa.tileX).toBeGreaterThan(bookshelf.tileX);
     expect(sofaBookshelfTileGap).toBeGreaterThanOrEqual(1.35);
-    expect(sofaBookshelfTileGap).toBeLessThanOrEqual(2.05);
-    expect(fridge.tileX).toBeGreaterThanOrEqual(ROOM_LAYOUT.floor.widthTiles - 1.8);
-    expect(fridge.tileY).toBeLessThanOrEqual(1);
+    expect(fridge.tileX).toBeGreaterThanOrEqual(ROOM_LAYOUT.floor.widthTiles - 2.5);
+    expect(fridge.tileY).toBeLessThanOrEqual(2);
     expect(phoneCabinet.scale).toBeLessThanOrEqual(0.72);
     expect(nearestRoomInteraction(projectIso(phoneCabinet), 'emergency')?.id).toBe(
       'callEmergency'

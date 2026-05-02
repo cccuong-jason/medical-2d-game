@@ -30,24 +30,35 @@ const MOVABLE_PHASES: AppPhase[] = [
 ];
 const PLAYER_SPEED_TILES_PER_SECOND = 1.75;
 const PLAYER_COLLISION_RADIUS = 14;
-const ROOM_CAMERA_ZOOM = 1.05;
-const ROOM_CAMERA_CENTER_Y = 228;
+const ROOM_CAMERA_ZOOM = 0.95;
+const ROOM_CAMERA_CENTER_Y = 280;
 
-function characterTextureKey(characterKey: CharacterAssetKey, direction: Direction) {
-  return `character:${characterKey}:${direction}`;
+// Forced V6 Key naming to break ALL caching
+function getCharacterTextureKey(characterKey: CharacterAssetKey, direction: Direction) {
+  return `v6_char_${characterKey}_${direction}`;
 }
 
-function propTextureKey(propKey: PropAssetKey) {
-  return `prop:${propKey}`;
+function getPropTextureKey(propKey: PropAssetKey) {
+  return `v6_prop_${propKey}`;
 }
 
-function tileTextureKey(tileKey: keyof typeof assetManifest.assets.tiles) {
-  return `tile:${tileKey}`;
+function getTileTextureKey(tileKey: keyof typeof assetManifest.assets.tiles) {
+  return `v6_tile_${tileKey}`;
 }
 
 function clamp(value: number, min: number, max: number) {
   return Math.min(Math.max(value, min), max);
 }
+
+// Definitively resolve paths for Vite/Phaser in a public folder context
+const resolveAssetUrl = (rawPath: string) => {
+  let p = rawPath;
+  if (p.startsWith('/')) {
+    p = p.slice(1);
+  }
+  // Add unique version to bust any browser/proxy cache
+  return `${p}?v=6_${Date.now()}`;
+};
 
 export class RoomScene extends Phaser.Scene {
   private cursors?: Phaser.Types.Input.Keyboard.CursorKeys;
@@ -77,32 +88,50 @@ export class RoomScene extends Phaser.Scene {
   }
 
   preload() {
-    for (const characterKey of Object.keys(
-      assetManifest.assets.characters
-    ) as CharacterAssetKey[]) {
-      const character = assetManifest.assets.characters[characterKey];
+    console.warn('[RoomScene] %cRE-INITIALIZING ASSET LOADER V6', 'color: yellow; font-weight: bold');
 
-      for (const direction of Object.keys(character.rotations) as Direction[]) {
-        this.load.image(
-          characterTextureKey(characterKey, direction),
-          character.rotations[direction]
-        );
+    this.load.on('loaderror', (file: Phaser.Loader.File) => {
+      console.error(`[RoomScene] FAILED TO LOAD: ${file.key} from URL: ${file.url}`);
+    });
+
+    // 1. Characters
+    const charMap = assetManifest.assets.characters;
+    (Object.keys(charMap) as CharacterAssetKey[]).forEach((ck) => {
+      const charData = charMap[ck];
+      (Object.keys(charData.rotations) as Direction[]).forEach((dir) => {
+        const key = getCharacterTextureKey(ck, dir);
+        const url = resolveAssetUrl(charData.rotations[dir]);
+        this.load.image(key, url);
+      });
+    });
+
+    // 2. Props
+    const propMap = assetManifest.assets.props;
+    (Object.keys(propMap) as PropAssetKey[]).forEach((pk) => {
+      const propData = propMap[pk];
+      if (propData && propData.path) {
+        const key = getPropTextureKey(pk);
+        const url = resolveAssetUrl(propData.path);
+        this.load.image(key, url);
       }
-    }
+    });
 
-    for (const propKey of Object.keys(assetManifest.assets.props) as PropAssetKey[]) {
-      this.load.image(propTextureKey(propKey), assetManifest.assets.props[propKey].path);
-    }
-
-    for (const tileKey of Object.keys(
-      assetManifest.assets.tiles
-    ) as Array<keyof typeof assetManifest.assets.tiles>) {
-      this.load.image(tileTextureKey(tileKey), assetManifest.assets.tiles[tileKey].path);
-    }
+    // 3. Tiles
+    const tileMap = assetManifest.assets.tiles;
+    (Object.keys(tileMap) as Array<keyof typeof tileMap>).forEach((tk) => {
+      const tileData = tileMap[tk];
+      if (tileData && tileData.path) {
+        const key = getTileTextureKey(tk);
+        const url = resolveAssetUrl(tileData.path);
+        this.load.image(key, url);
+      }
+    });
   }
 
   create() {
+    console.warn('[RoomScene] %cSCENE CREATE V6 READY', 'color: green; font-weight: bold');
     this.cameras.main.setBackgroundColor('#201817');
+    
     this.createRoomShell();
     this.createFloor();
     this.createProps();
@@ -110,11 +139,12 @@ export class RoomScene extends Phaser.Scene {
     this.createSceneHud();
     this.configureCamera();
     this.configureInput();
+    
     this.syncFromStore(useGameStore.getState());
-
     this.unsubscribeStore = useGameStore.subscribe((state) => {
       this.syncFromStore(state);
     });
+    
     this.events.once('shutdown', () => this.disposeStoreSubscription());
     this.events.once('destroy', () => this.disposeStoreSubscription());
   }
@@ -175,8 +205,9 @@ export class RoomScene extends Phaser.Scene {
     for (let tileX = 0; tileX < ROOM_LAYOUT.floor.widthTiles; tileX += 1) {
       for (let tileY = 0; tileY < ROOM_LAYOUT.floor.depthTiles; tileY += 1) {
         const position = projectIso({ tileX, tileY });
+        const texKey = getTileTextureKey(ROOM_LAYOUT.floor.assetKey);
         this.add
-          .image(position.x, position.y, tileTextureKey(ROOM_LAYOUT.floor.assetKey))
+          .image(position.x, position.y, texKey)
           .setOrigin(0.5, 0.5)
           .setScale(ROOM_LAYOUT.floor.scale)
           .setDepth(depthForIsoPosition(position, -20));
@@ -188,9 +219,10 @@ export class RoomScene extends Phaser.Scene {
     for (const prop of ROOM_LAYOUT.props) {
       const manifestProp = assetManifest.assets.props[prop.assetKey];
       const position = projectIso(prop);
+      const texKey = getPropTextureKey(prop.assetKey);
 
       const propImage = this.add
-        .image(position.x, position.y, propTextureKey(prop.assetKey))
+        .image(position.x, position.y, texKey)
         .setOrigin(manifestProp.anchor.x, manifestProp.anchor.y)
         .setScale(prop.scale)
         .setDepth(depthForIsoPosition(position, prop.depthOffset));
@@ -221,7 +253,7 @@ export class RoomScene extends Phaser.Scene {
       .image(
         playerPosition.x,
         playerPosition.y,
-        characterTextureKey(playerLayout.assetKey, playerLayout.direction)
+        getCharacterTextureKey(playerLayout.assetKey, playerLayout.direction)
       )
       .setOrigin(playerManifest.anchor.x, playerManifest.anchor.y)
       .setScale(playerLayout.scale)
@@ -231,7 +263,7 @@ export class RoomScene extends Phaser.Scene {
       .image(
         motherPosition.x,
         motherPosition.y,
-        characterTextureKey(motherLayout.assetKey, motherLayout.direction)
+        getCharacterTextureKey(motherLayout.assetKey, motherLayout.direction)
       )
       .setOrigin(motherManifest.anchor.x, motherManifest.anchor.y)
       .setScale(motherLayout.scale)
@@ -308,28 +340,28 @@ export class RoomScene extends Phaser.Scene {
 
     if (nextDirection && nextDirection !== this.playerDirection) {
       this.playerDirection = nextDirection;
-      this.player.setTexture(characterTextureKey('girlA', nextDirection));
+      this.player.setTexture(getCharacterTextureKey('girlA', nextDirection));
     }
 
     const step = PLAYER_SPEED_TILES_PER_SECOND * (delta / 1000);
     const nextTile = {
       tileX: clamp(
         this.playerTile.tileX + (normalizedX + normalizedY) * step,
-        ROOM_LAYOUT.bounds.minTileX + 0.28,
-        ROOM_LAYOUT.bounds.maxTileX - 0.28
+        ROOM_LAYOUT.bounds.minTileX + 0.2,
+        ROOM_LAYOUT.bounds.maxTileX - 0.2
       ),
       tileY: clamp(
         this.playerTile.tileY + (normalizedY - normalizedX) * step,
-        ROOM_LAYOUT.bounds.minTileY + 0.28,
-        ROOM_LAYOUT.bounds.maxTileY - 0.28
+        ROOM_LAYOUT.bounds.minTileY + 0.2,
+        ROOM_LAYOUT.bounds.maxTileY - 0.2
       )
     };
-    const nextPosition = projectIso(nextTile);
 
-    if (this.isBlocked(nextPosition)) {
+    if (this.isBlocked(nextTile.tileX, nextTile.tileY)) {
       return;
     }
 
+    const nextPosition = projectIso(nextTile);
     this.playerTile = nextTile;
     this.player.setPosition(nextPosition.x, nextPosition.y);
     this.player.setDepth(depthForIsoPosition(nextPosition));
@@ -480,42 +512,54 @@ export class RoomScene extends Phaser.Scene {
     if (condition === 'normal') {
       this.mother.clearTint();
       this.mother.setAlpha(1);
-      this.mother.setTexture(characterTextureKey('mother', 'south-west'));
+      this.mother.setTexture(getCharacterTextureKey('mother', 'south-west'));
       return;
     }
 
     this.mother.setTint(0xffc2b7);
     this.mother.setAlpha(1);
-    this.mother.setTexture(characterTextureKey('mother', 'south'));
+    this.mother.setTexture(getCharacterTextureKey('mother', 'south'));
   }
 
-  private isBlocked(position: IsoPosition) {
-    return ROOM_LAYOUT.props.some((prop) => {
+  private isBlocked(tileX: number, tileY: number) {
+    // Check props
+    const hitProp = ROOM_LAYOUT.props.some((prop) => {
       if (!prop.blocksMovement) {
         return false;
       }
-
-      return this.collidesWithProp(position, prop);
+      return this.collidesWithProp(tileX, tileY, prop);
     });
-  }
-
-  private collidesWithProp(position: IsoPosition, prop: RoomProp) {
-    const manifestProp = assetManifest.assets.props[prop.assetKey];
-    const collision = manifestProp.collision;
-
-    if (collision.shape !== 'rectangle') {
-      return false;
+    if (hitProp) {
+      return true;
     }
 
-    const propPosition = projectIso(prop);
-    const halfWidth = (collision.width * prop.scale) / 2 + PLAYER_COLLISION_RADIUS;
-    const halfHeight =
-      (collision.height * prop.scale) / 2 + PLAYER_COLLISION_RADIUS * 0.55;
+    // Check mother (character-to-character collision)
+    const mother = ROOM_LAYOUT.characters.find((c) => c.id === 'mother');
+    if (mother) {
+      const playerRadius = 0.35;
+      const motherRadius = 0.35;
+      const dx = tileX - mother.tileX;
+      const dy = tileY - mother.tileY;
+      if (Math.abs(dx) < playerRadius + motherRadius && Math.abs(dy) < playerRadius + motherRadius) {
+        return true;
+      }
+    }
 
-    return (
-      Math.abs(position.x - propPosition.x) < halfWidth &&
-      Math.abs(position.y - propPosition.y) < halfHeight
-    );
+    return false;
+  }
+
+  private collidesWithProp(tileX: number, tileY: number, prop: RoomProp) {
+    const manifestProp = assetManifest.assets.props[prop.assetKey];
+    const footprint = manifestProp.footprintTiles;
+
+    // Player radius in tile units
+    const pr = 0.28;
+
+    // Assuming prop.tileX/Y is the center of its footprint
+    const halfW = footprint.width / 2 + pr;
+    const halfH = footprint.height / 2 + pr;
+
+    return Math.abs(tileX - prop.tileX) < halfW && Math.abs(tileY - prop.tileY) < halfH;
   }
 
   private isKeyDown(
